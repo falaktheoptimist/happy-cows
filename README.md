@@ -26,3 +26,17 @@ The directory structure of your new project looks like this:
 │
 └── scripts            <- Scripts utilized in data manipulation.
 ```
+
+## Setup
+
+Install dependencies
+
+``` python
+python scripts/get_requirements.py
+```
+
+Download raw data
+
+``` python
+python scripts/get_raw_data.py
+```

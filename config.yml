@@ -1,9 +1,14 @@
 aws:
-    access_key: access_key
-    secret_key: secret_key
-    bucket: bucket_name
-    data_sets: [
-        classification,
-        milk_volume,
-        weather
-    ]
+    access_key: access-key
+    secret_key: secret-key
+    
+datasets:
+    - name: weather
+      bucket-name: happy-cow-weather
+      local-target-folder: './data/raw/weather/'
+    - name: milk-volumes
+      bucket-name: happy-cow-milk-volumes
+      local-target-folder: ./data/raw/milk-volumes/
+    - name: classifications
+      bucket-name: happy-cow-classifications
+      local-target-folder: ./data/raw/classifications/
