@@ -1,0 +1,9 @@
+aws:
+    access_key: access_key
+    secret_key: secret_key
+    bucket: bucket_name
+    data_sets: [
+        classification,
+        milk_volume,
+        weather
+    ]
