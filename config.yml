@@ -5,7 +5,7 @@ aws:
 datasets:
     - name: weather
       bucket-name: happy-cow-weather
-      local-target-folder: './data/raw/weather/'
+      local-target-folder: ./data/raw/weather/
     - name: milk-volumes
       bucket-name: happy-cow-milk-volumes
       local-target-folder: ./data/raw/milk-volumes/
