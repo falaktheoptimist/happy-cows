@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository is intended for the analysis of milk production data, collected from a small Pennsylvania dairy farm.  For additional information check out the [project overview](/references/overview.md).
+This repository is intended for the analysis of milk production data, collected from a small Pennsylvania dairy farm.  For additional information check out the [project overview](references/OVERVIEW.md).
 
 ## Structure
 
