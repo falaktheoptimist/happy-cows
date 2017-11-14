@@ -1,5 +1,8 @@
-"""sqlite table definitions commands
+""" String Constants and Table Definitions for database
 """
+
+DATABASE_NAME = "happycows"
+DATABASE_PATH = "data/intermediate/"
 
 CREATE_CLASSIFICATION_TABLE = """
     CREATE TABLE IF NOT EXISTS classification(
