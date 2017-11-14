@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Raw Data Retrieval
 
 This script populates the ./data/raw folders with an raw files currently stored on AWS S3.
@@ -6,20 +5,9 @@ This script populates the ./data/raw folders with an raw files currently stored 
 Proper configuration and placement of .config.yml in the root directory is required for operation.
 """
 import sys
-import os
 import boto3  # AWS python SDK
-import yaml   # yaml file interpretation
-
-def get_config():
-    """Returns Configuration Dictionary"""
-    with open(".config.yml", 'r') as ymlfile:
-        config = yaml.load(ymlfile)
-    return config
-
-def ensure_directory_exists(path):
-    """Validates that a directory exists.  Creates directory if it does not."""
-    if not os.path.isdir(path):
-        os.makedirs(path)
+from helper_functions import get_config
+from helper_functions import ensure_directory_exists
 
 def download_dataset(target_directory, bucket_name, s3):
     """Downloads an S3 Dataset and places it in a targeted directory"""
