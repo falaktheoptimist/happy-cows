@@ -38,5 +38,11 @@ python scripts/get_requirements.py
 Download raw data
 
 ``` python
-python scripts/get_raw_data.py
+python scripts/get_data.py
+```
+
+Generate database from raw data
+
+``` python
+python scripts/load_database.py
 ```

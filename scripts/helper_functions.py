@@ -5,8 +5,9 @@ This is a collection of helper methods for use across scripts.
 import os
 import yaml   # yaml file interpretation
 from sqlalchemy import create_engine
-from table_definitions import DATABASE_NAME
-from table_definitions import DATABASE_PATH
+
+_DATABASE_NAME = "happycows"
+_DATABASE_PATH = "data/database/"
 
 def ensure_directory_exists(path):
     """Validates that a directory exists.  Creates directory if it does not."""
@@ -20,6 +21,6 @@ def get_config():
     return config
 
 def get_db_engine():
-    """ Returns results of sqlalchemy.create_engine('sqlite:///data/intermediate/happy-cows.db') """
-    ensure_directory_exists(DATABASE_PATH)
-    return create_engine(f'sqlite:///{DATABASE_PATH}{DATABASE_NAME}.db')
+    """ Returns results of sqlalchemy.create_engine() """
+    ensure_directory_exists(_DATABASE_PATH)
+    return create_engine(f'sqlite:///{_DATABASE_PATH}{_DATABASE_NAME}.db')
