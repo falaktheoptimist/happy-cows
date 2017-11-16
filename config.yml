@@ -3,12 +3,18 @@ aws:
     secret_key: secret-key
     
 datasets:
-    - name: weather
-      bucket-name: happy-cow-weather
-      local-target-folder: ./data/raw/weather/
-    - name: milk-volumes
-      bucket-name: happy-cow-milk-volumes
-      local-target-folder: ./data/raw/milk-volumes/
-    - name: classifications
-      bucket-name: happy-cow-classifications
-      local-target-folder: ./data/raw/classifications/
+    weather: 
+        name: weather
+        bucket-name: happy-cow-weather
+        local-target-folder: ./data/raw/weather/
+        regex: ./data/raw/weather/*.csv
+    milk_volumes:
+        name: milk-volumes
+        bucket-name: happy-cow-milk-volumes
+        local-target-folder: ./data/raw/milk-volumes/
+        regex:
+    classifications: 
+        name: classifications
+        bucket-name: happy-cow-classifications
+        local-target-folder: ./data/raw/classifications/
+        regex: ./data/raw/classifications/*.csv
