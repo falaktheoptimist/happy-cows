@@ -9,11 +9,9 @@ import random
 import pandas as pd
 import helper_functions as helper
 
-_COLUMN_DICT = {
+_INT_COLUMNS = {
     'BARN_ID':'animal_id',
-    'AGE':'age',
     'LAC':'lactation_count',
-    'DATE_CALVED':'date_calved',
     'ST':'stature',
     'SR':'strength',
     'BD':'body_depth',
@@ -39,45 +37,88 @@ _COLUMN_DICT = {
     'RP':'rump_aggregate',
     'FL':'feet_and_legs_aggregate',
     'MS':'udder_score_aggregate',
-    'FS':'final_score',
+    'FS':'final_score'
+}
+
+_STRING_COLUMNS = {
+    'AGE':'age'
+}
+
+_FLOAT_COLUMNS = {
     '%BAA':'breed_age_average'
 }
 
-def determine_breakdown_category_from_final_score(final_score):
+_DATE_COLUMNS = {
+    'DATE_CALVED':'date_calved',
+    'DATE':'date'
+}
+
+def get_columns_dictionary():
+    """ Returns compiled dictionary of all column name pairs """
+    columns_dictionary = {}
+    for type_dictionary in [_INT_COLUMNS, _STRING_COLUMNS, _FLOAT_COLUMNS, _DATE_COLUMNS]:
+        columns_dictionary.update(type_dictionary)
+    return columns_dictionary
+
+def determine_animal_category(final_score):
     """ Returns a string category based on the final score of an animal """
-    final_score = int(final_score)
-    if final_score >= 90:
-        return "Excellent"
-    if final_score >= 85:
-        return "Very Good"
-    if final_score >= 80:
-        return "Good Plus"
-    if final_score >= 75:
-        return "Good"
-    if final_score >= 65:
-        return "Fair"
-    return "Poor"
+    category = ""
+    try:
+        if final_score >= 90:
+            category = "Excellent"
+        if final_score >= 85:
+            category = "Very Good"
+        if final_score >= 80:
+            category = "Good Plus"
+        if final_score >= 75:
+            category = "Good"
+        if final_score >= 65:
+            category = "Fair"
+        category = "Poor"
+    except ValueError:
+        category = None
+    return category
 
 def get_dataframe_from_file(data_file):
     """ Returns modified dataframe from a classification file """
-    classification_date = datetime.strptime(re.search('\d{4}_\d{2}_\d{2}', data_file)[0], '%Y_%m_%d')
+    columns_dictionary = get_columns_dictionary()
+    date_string = re.search(r'\d{4}_\d{2}_\d{2}', data_file)[0]
+    print(date_string)
+    classification_date = datetime.strptime(date_string, '%Y_%m_%d')
+    print(classification_date)
     class_df = pd.read_csv(
         data_file,
         sep=',',
         header=1
     )
-    class_df = class_df[list(_COLUMN_DICT.keys())]
-    class_df.rename(columns=_COLUMN_DICT, inplace=True) 
-    assert len(class_df.columns) == len(_COLUMN_DICT)
-    class_df.dropna(axis=0, how='any', inplace=True)
-    class_df['date'] = classification_date
-    class_df['category'] = class_df['final_score'].apply(lambda x: determine_breakdown_category_from_final_score(x))
-    return class_df
+    keys = list(columns_dictionary.keys())
+    class_df['DATE'] = classification_date
+    class_df = class_df[keys]
+
+    for old_key, new_key in _INT_COLUMNS.items():
+        class_df[old_key] = pd.to_numeric(class_df[old_key], errors='coerce', downcast='integer')
+        class_df[old_key].rename(new_key)
+
+    for old_key, new_key in _FLOAT_COLUMNS.items():
+        class_df[old_key] = pd.to_numeric(class_df[old_key], errors='coerce', downcast='float')
+        class_df[old_key].rename(new_key)
+
+    for old_key, new_key in _DATE_COLUMNS.items():
+        class_df[old_key] = pd.to_datetime(class_df[old_key], errors='coerce')
+        class_df[old_key].rename(new_key)
+
+    class_df.rename(columns=columns_dictionary, inplace=True)
+    assert len(class_df.columns) == len(columns_dictionary)
+
+    class_df['category'] = class_df['final_score'].apply(determine_animal_category)
+    class_df['category'] = class_df['category'].astype('category')
+
+    return class_df.dropna(axis=0, how='all')
 
 def main():
-    """ Selects a random classification file and attempts to parse it. Prints df.head(10) """
+    """ Selects a random classification file, parses file, prints df.info()"""
     files = glob.glob(f"{helper.get_config()['datasets']['classifications']['regex']}")
-    print(get_dataframe_from_file(random.choice(files)).head(10))
+    print(get_dataframe_from_file(random.choice(files)).info())
 
 if __name__ == '__main__':
     sys.exit(main())
