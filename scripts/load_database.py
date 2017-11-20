@@ -32,9 +32,9 @@ def load_dataset(dataset_name, file_regex):
                 print(f"Skipping file...")
 
 def main():
-    load_dataset('milk-volumes', '*.txt')
+    #load_dataset('milk-volumes', '*.txt')
     load_dataset('weather', '*.csv')
-    load_dataset('classifications', '*.csv')
+   # load_dataset('classifications', '*.csv')
 
 if __name__ == '__main__':
     sys.exit(main())

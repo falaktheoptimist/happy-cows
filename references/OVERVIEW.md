@@ -49,7 +49,7 @@ Current sources of data include:
 
 ### Regional Climate
 
-- **Description:** Daily weather summaries for Franklin County, Pennsylvania. Data extends from January 1, 2015 to November 3, 2017.
+- **Description:** Daily weather summaries for Franklin County, Pennsylvania. Data extends from January 1, 2014 to November 3, 2017.
 - **Source:** [NOAA Online Climate Data Online Search](https://www.ncdc.noaa.gov/cdo-web/search)
 - **Acquisition:** CSV Export of Daily Summary reports from all locations in Franklin County, PA.
 
