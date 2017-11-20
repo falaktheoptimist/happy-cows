@@ -4,13 +4,14 @@ Methods to parse weather data from csv files and return a dataframe
 import sys
 import glob
 import random
+from datetime import datetime
 import pandas as pd
 import pandas.api.types as ptypes
 import helper_functions as helper
-from datetime import datetime
 
 def get_dataframe_from_file(data_file):
-    weather = pd.read_csv(data_file,sep=',', header=0)[[
+    """ Parses NOAA daily weather summary CSVs. Returns DataFrame """
+    weather = pd.read_csv(data_file, sep=',', header=0)[[
         'STATION', 'NAME', 'LATITUDE', 'LONGITUDE', 'ELEVATION', 'DATE', 'PRCP', 'TMIN', 'TMAX'
     ]]
     weather['DATE'] = weather['DATE'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
