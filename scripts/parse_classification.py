@@ -66,15 +66,16 @@ def determine_animal_category(final_score):
     try:
         if final_score >= 90:
             category = "Excellent"
-        if final_score >= 85:
+        elif final_score >= 85:
             category = "Very Good"
-        if final_score >= 80:
+        elif final_score >= 80:
             category = "Good Plus"
-        if final_score >= 75:
+        elif final_score >= 75:
             category = "Good"
-        if final_score >= 65:
+        elif final_score >= 65:
             category = "Fair"
-        category = "Poor"
+        else:
+            category = "Poor"
     except ValueError:
         category = None
     return category
