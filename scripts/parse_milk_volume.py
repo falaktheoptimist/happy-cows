@@ -24,6 +24,20 @@ def extract_columns_from_fullline(data):
     data.columns = ['date', 'record_type', 'animal_id', 'animal_type', 'measurement', 'value']
     return data
 
+def validate_and_drop_record_type(data):
+    """ data.record_type is assumed to be homogeneous value of 'R' """
+    assert data['record_type'].values.all() == 'R'
+    data = data.drop(['record_type'], axis=1)
+    assert 'record_type' not in data.columns
+    return data
+
+def validate_and_drop_animal_type(data):
+    """ data.animal_type assumed not null, and homogenous value of 'Cow'"""
+    assert data['animal_type'].str.contains('^Cow$').all()
+    data = data.drop(['animal_type'], axis=1)
+    assert 'animal_type' not in data.columns
+    return data
+
 def transform_date(data, milking_date):
     """data.date is assumed to be in HH:MM:SS format.
        Confirm, transform and combine with milk_date"""
@@ -31,6 +45,13 @@ def transform_date(data, milking_date):
     data['date'] = data['date'].apply(lambda x: datetime.strptime(x, '%H:%M:%S'))
     data['date'] = data['date'].apply(lambda x: datetime.combine(milking_date, x.time()))
     assert not data['date'].isnull().values.any()
+    return data
+
+def transform_animal_id(data):
+    """ data.animal_id is assumed to be an integer value """
+    assert data['animal_id'].str.contains(r'^\d+$').all()
+    data['animal_id'] = data['animal_id'].apply(lambda id_string: int(id_string))
+    assert not data['animal_id'].isnull().values.any()
     return data
 
 def extract_milk_weight(row):
@@ -51,10 +72,26 @@ def extract_max_flow(row):
         return float(row['value'])
     return np.nan
 
+def extract_milk_production_data(data):
+    """ Extracts individual records of concern into unique columns """
+    data['milk_weight'] = data.apply(extract_milk_weight, axis=1)
+    data['average_flow'] = data.apply(extract_average_flow, axis=1)
+    data['max_flow'] = data.apply(extract_max_flow, axis=1)
+    return data
+
+def drop_features(data):
+    """ Drop unused columns """
+    data = validate_and_drop_record_type(data)
+    data = validate_and_drop_animal_type(data)
+    data.drop(['measurement'], axis=1)
+    data.drop(['value'], axis=1)
+    assert 'measurement', 'value' not in data.columns
+    return data
+
 def get_dataframe_from_file(data_file):
     """Parse and store milk volumes filename expected in YYYYMMDD.txt format"""
     # Extract milk date from filename
-    milking_date = datetime.strptime(re.search('\d{8}', data_file)[0], '%Y%m%d')
+    milking_date = datetime.strptime(re.search(r'\d{8}', data_file)[0], '%Y%m%d')
 
     # Parse each line into dataframe
     milk_data = pd.read_csv(
@@ -64,34 +101,17 @@ def get_dataframe_from_file(data_file):
         encoding='Latin',
         names=['full_line']
     )
-    
+
     # Extract lines with animal specific measurements
     milk_data = milk_data[milk_data['full_line'].str.contains('\tR\t[0-9]+\tCow\t')]
-    
+
     milk_data = extract_columns_from_fullline(milk_data)
-    milk_data = transform_date(milk_data, milking_date) 
-    # milk_data.record_type is assumed to be homogenous value of 'R'
-    assert milk_data['record_type'].values.all() == 'R'
-    milk_data.drop(['record_type'], axis = 1, inplace = True)
-    assert 'record_type' not in milk_data.columns
-    
-    # milk_data.animal_id is assumed to be an integer value
-    assert milk_data['animal_id'].str.contains('^\d+$').all()
-    milk_data['animal_id'] = milk_data['animal_id'].apply(lambda id_string: int(id_string))
-    assert not milk_data['animal_id'].isnull().values.any()
 
-    # milk_data.animal_type assumed not null, and homogenous value of 'Cow'
-    assert milk_data['animal_type'].str.contains('^Cow$').all()
-    milk_data.drop(['animal_type'], axis=1, inplace=True)
-    assert 'animal_type' not in milk_data.columns
+    milk_data = transform_animal_id(milk_data)
+    milk_data = transform_date(milk_data, milking_date)
 
-    milk_data['milk_weight'] = milk_data.apply(extract_milk_weight, axis=1)
-    milk_data['average_flow'] = milk_data.apply(extract_average_flow, axis=1)
-    milk_data['max_flow'] = milk_data.apply(extract_max_flow, axis=1)
-    
-    milk_data.drop(['measurement'], axis = 1, inplace = True)
-    milk_data.drop(['value'], axis = 1, inplace = True)
-    assert 'measurement', 'value' not in milk_data.columns
+    milk_data = extract_milk_production_data(milk_data)
+    milk_data = drop_features(milk_data)
 
     return milk_data.pivot_table(index=['date', 'animal_id'], values=['milk_weight', 'average_flow', 'max_flow']).dropna()
 
