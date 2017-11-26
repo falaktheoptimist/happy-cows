@@ -1,10 +1,37 @@
 """
 Methods to parse milk volume data from raw log files and return a dataframe
 """
+import sys
+import glob
+import random
 from datetime import datetime
 import re as re
 import numpy as np
 import pandas as pd
+import helper_functions as helper
+
+def extract_columns_from_fullline(data):
+    """ Transform data['full_line'] into dataframe with multiple columns """
+    # Lines are expected to begin with \n character
+    assert data['full_line'].str.startswith("\n").all()
+    data['full_line'] = data['full_line'].str.replace("\n", "")
+    assert not data['full_line'].str.startswith("\n").any()
+
+    # Split full_line into multiple columns
+    assert len(data.columns) == 1
+    data = pd.DataFrame(data['full_line'].str.split('\t').tolist(), index=None)
+    assert len(data.columns) == 6
+    data.columns = ['date', 'record_type', 'animal_id', 'animal_type', 'measurement', 'value']
+    return data
+
+def transform_date(data, milking_date):
+    """data.date is assumed to be in HH:MM:SS format.
+       Confirm, transform and combine with milk_date"""
+    assert data['date'].str.contains(r'\d{2}:\d{2}:\d{2}').all()
+    data['date'] = data['date'].apply(lambda x: datetime.strptime(x, '%H:%M:%S'))
+    data['date'] = data['date'].apply(lambda x: datetime.combine(milking_date, x.time()))
+    assert not data['date'].isnull().values.any()
+    return data
 
 def extract_milk_weight(row):
     """ Extracts milk_weight values"""
@@ -41,22 +68,8 @@ def get_dataframe_from_file(data_file):
     # Extract lines with animal specific measurements
     milk_data = milk_data[milk_data['full_line'].str.contains('\tR\t[0-9]+\tCow\t')]
     
-    # Lines are expected to begin with \n character
-    assert milk_data['full_line'].str.startswith("\n").all()
-    milk_data['full_line'] = milk_data['full_line'].str.replace("\n","")
-    
-    # Split full_line into multiple columns, 
-    assert len(milk_data.columns) == 1
-    milk_data = pd.DataFrame(milk_data['full_line'].str.replace("\n","").str.split('\t').tolist(), index=None)
-    assert len(milk_data.columns) == 6
-    milk_data.columns = ['date', 'record_type', 'animal_id', 'animal_type', 'measurement', 'value']
-    
-    # milk_data.date is assumed to be in HH:MM:SS format.  Confirm, transform and combine with milk_date
-    assert milk_data['date'].str.contains('\d{2}:\d{2}:\d{2}').all()
-    milk_data['date'] = milk_data['date'].apply(lambda x: datetime.strptime(x, '%H:%M:%S'))
-    milk_data['date'] = milk_data['date'].apply(lambda x: datetime.combine(milking_date, x.time()))
-    assert not milk_data['date'].isnull().values.any()
-    
+    milk_data = extract_columns_from_fullline(milk_data)
+    milk_data = transform_date(milk_data, milking_date) 
     # milk_data.record_type is assumed to be homogenous value of 'R'
     assert milk_data['record_type'].values.all() == 'R'
     milk_data.drop(['record_type'], axis = 1, inplace = True)
@@ -81,3 +94,11 @@ def get_dataframe_from_file(data_file):
     assert 'measurement', 'value' not in milk_data.columns
 
     return milk_data.pivot_table(index=['date', 'animal_id'], values=['milk_weight', 'average_flow', 'max_flow']).dropna()
+
+def main():
+    """ Selects a random weather file, parses file, prints df.info()"""
+    files = glob.glob(f"{helper.get_config()['datasets']['milk_volumes']['regex']}")
+    print(get_dataframe_from_file(random.choice(files)).info())
+
+if __name__ == '__main__':
+    sys.exit(main())

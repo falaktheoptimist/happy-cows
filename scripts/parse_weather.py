@@ -9,12 +9,16 @@ import pandas as pd
 import pandas.api.types as ptypes
 import helper_functions as helper
 
+def format_date(df):
+    """Converts weather['Date'] to datetime"""
+    return df['DATE'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
+
 def get_dataframe_from_file(data_file):
     """ Parses NOAA daily weather summary CSVs. Returns DataFrame """
     weather = pd.read_csv(data_file, sep=',', header=0)[[
         'STATION', 'NAME', 'LATITUDE', 'LONGITUDE', 'ELEVATION', 'DATE', 'PRCP', 'TMIN', 'TMAX'
     ]]
-    weather['DATE'] = weather['DATE'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
+    weather = format_date(weather)
     weather.set_index(['DATE', 'STATION'])
     
     assert weather[weather['TMAX'].notnull()]['TMAX'].between(-20, 120).all()
