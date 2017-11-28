@@ -84,9 +84,7 @@ def get_dataframe_from_file(data_file):
     """ Returns modified dataframe from a classification file """
     columns_dictionary = get_columns_dictionary()
     date_string = re.search(r'\d{4}_\d{2}_\d{2}', data_file)[0]
-    print(date_string)
     classification_date = datetime.strptime(date_string, '%Y_%m_%d')
-    print(classification_date)
     class_df = pd.read_csv(
         data_file,
         sep=',',

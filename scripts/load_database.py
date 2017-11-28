@@ -32,6 +32,7 @@ def load_dataset(dataset_name, file_regex):
                 print(f"Skipping file...")
 
 def main():
+    """ Loads local database """
     load_dataset('milk-volumes', '*.txt')
     load_dataset('weather', '*.csv')
     load_dataset('classifications', '*.csv')
