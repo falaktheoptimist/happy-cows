@@ -43,11 +43,7 @@ The number of consecutive days a given cow has been actively producing milk.
 
 #### Linear Classification Score
 
-An integer score between 1-100 given to a milk cow, providing a numerical representation of how well a the physical attributes of an animal fits the profile of an 'ideal' milking cow. A weighted summarization of 18+ assessments of a given animal.
-
-#### Breed Age Average
-
-A numerical score, based on the final linear classification score. Provides additional weighting for the breed, and age of an animal. May exceed 100, and a higher score indicates a more 'ideal' milking cow.
+An integer score between 50-99 given to a milk cow, providing a numerical representation of how well a the physical attributes of an animal fits the profile of an 'ideal' milking cow. A weighted summarization of 18+ assessments of a given animal.
 
 ## Current Dataset(s)
 
@@ -55,7 +51,7 @@ A numerical score, based on the final linear classification score. Provides addi
 
 #### Description
 
-The milk weight dataset provides unique records of individual milking events from a given cow.  Cows may be milked up to twice daily.  The results of these milking sessions are captured daily system logs in a series of text files from the local storage of the dairy farm's DeLaval - ALPRO™ herd management system [[Example File]](/references/example_files/milk_volume_example.txt). The following lines provide an example of relevant data elements:
+The milk weight dataset provides unique records of individual milking events from a given cow.  On this farm, cows may be milked up to twice daily.  The results of these milking sessions are captured daily system logs in a series of text files from the local storage of the dairy farm's DeLaval - ALPRO™ herd management system [[Example File]](/references/example_files/milk_volume_example.txt). The following lines provide an example of relevant data elements:
 
 ``` txt
 04:27:56    R    200    Cow    Duration1    3:47
@@ -78,7 +74,7 @@ The contents of each log file were parsed into pandas.DataFrame.  Regex expressi
 
 #### Description
 
-Linear Classification Scores provide a periodic assessment of the physical attributes of a given animal.  Animals are classified on a scale from 1-100 based on some measured characteristics for comparison against the 'ideal' milking cow.  These [Linear Classification Reports](http://www.holsteinusa.com/programs_services/classification.html)  were conducted by a representative of [Holstein Association USA](http://www.holsteinusa.com/) between August 8, 2014, and July 10, 2017.
+Linear Classification Scores provide a periodic assessment of the physical attributes of a given animal.  Animals are classified on a scale from 50-99 based on some measured characteristics for comparison against the 'ideal' milking cow.  These [Linear Classification Reports](http://www.holsteinusa.com/programs_services/classification.html)  were conducted by a representative of [Holstein Association USA](http://www.holsteinusa.com/) between August 8, 2014, and July 10, 2017.
 
 ``` txt
 8/5/14,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
