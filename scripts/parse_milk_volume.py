@@ -79,6 +79,23 @@ def extract_milk_production_data(data):
     data['max_flow'] = data.apply(extract_max_flow, axis=1)
     return data
 
+def consolidate_to_daily_summaries(data):
+    """ Builds a daily summary table for storage """
+    data = data.reset_index()
+    ds = pd.DataFrame()
+    ds['date'] = pd.to_datetime(data['date'].dt.date)
+    data['date'] = pd.to_datetime(data['date'].dt.date)
+    ds['animal_id'] = data['animal_id']
+    ds = ds.set_index(['date', 'animal_id'])
+    
+    ds['milk_weight'] = data.groupby(['date', 'animal_id']).sum()['milk_weight']
+    ds['average_flow'] = data.groupby(['date', 'animal_id']).mean()['average_flow']
+    ds['max_flow'] = data.groupby(['date', 'animal_id']).max()['max_flow']
+
+    ds = ds.reset_index().set_index('date')
+    ds = ds.drop('index').drop_duplicates()
+    return ds
+
 def drop_features(data):
     """ Drop unused columns """
     data = validate_and_drop_record_type(data)
@@ -112,8 +129,8 @@ def get_dataframe_from_file(data_file):
 
     milk_data = extract_milk_production_data(milk_data)
     milk_data = drop_features(milk_data)
-
-    return milk_data.pivot_table(index=['date', 'animal_id'], values=['milk_weight', 'average_flow', 'max_flow']).dropna()
+    milk_data = milk_data.pivot_table(index=['date', 'animal_id'], values=['milk_weight', 'average_flow', 'max_flow']).dropna()
+    return consolidate_to_daily_summaries(milk_data)
 
 def main():
     """ Selects a random weather file, parses file, prints df.info()"""
