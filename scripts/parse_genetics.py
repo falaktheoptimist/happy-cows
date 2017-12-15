@@ -32,7 +32,7 @@ def get_dataframe_from_file(data_file):
 def main():
     """ Selects a random herd genetics reprot file, parses file, prints df.info()"""
     files = glob.glob(f"{helper.get_config()['datasets']['genetics']['regex']}")
-    print(get_dataframe_from_file(random.choice(files)).sample(5))
+    print(get_dataframe_from_file(random.choice(files)).info())
 
 if __name__ == '__main__':
     sys.exit(main())
