@@ -1,15 +1,10 @@
 """
-Loads raw files and places in database
+Calculates the number of days since calving and stores in milk database
 """
 import sys
-import glob as glob
 import numpy as np
 import pandas as pd
-from sqlalchemy import create_engine
 import helper_functions as helper
-import parse_milk_volume as milk_volume
-import parse_weather as weather
-import parse_classification as classification
 
 def retrieve_data(connection):
     milk = pd.read_sql_table('milk_volume', connection)
