@@ -46,3 +46,9 @@ Generate database from raw data
 ``` python
 python scripts/load_database.py
 ```
+
+Calculate days since calving
+
+``` python
+python scripts/add_days_since_calving.py
+```
