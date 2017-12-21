@@ -57,7 +57,8 @@ def transform_animal_id(data):
 def extract_milk_weight(row):
     """ Extracts milk_weight values"""
     if row['measurement'] in ['MilkToday1', 'MilkToday2']:
-        return float(row['value'])
+        # Weight Values from log files are in kg, converting to pounds
+        return round(float(row['value']) * 2.2046, 1)
     return np.nan
 
 def extract_average_flow(row):
