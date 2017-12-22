@@ -23,3 +23,13 @@ datasets:
         bucket-name: happy-cow-genetics
         local-target-folder: ./data/raw/genetics/
         regex: ./data/raw/genetics/*.csv
+    calvings: 
+        name: calvings
+        bucket-name: happy-cow-calvings-dates
+        local-target-folder: ./data/raw/calvings/
+        regex: ./data/raw/calvings/*.csv
+    birthdates: 
+        name: birthdates
+        bucket-name: happy-cow-birthdates
+        local-target-folder: ./data/raw/birthdates/
+        regex: ./data/raw/birthdates/*.csv

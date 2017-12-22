@@ -8,6 +8,8 @@ import parse_milk_volume as milk_volume
 import parse_weather as weather
 import parse_classification as classification
 import parse_genetics as genetics
+import parse_birthdates as birthdates
+import parse_calvings as calvings
 
 def load_dataset(dataset_name, file_regex):
     """Gathers specified data files, parses data, and inserts into database."""
@@ -28,6 +30,12 @@ def load_dataset(dataset_name, file_regex):
                 elif dataset_name == 'genetics':
                     genetics_df = genetics.get_dataframe_from_file(data_file)
                     genetics_df.to_sql(con=connection, name='genetics', if_exists='append')
+                elif dataset_name == 'birthdates':
+                    birthdates_df = birthdates.get_dataframe_from_file(data_file)
+                    birthdates_df.to_sql(con=connection, name='birthdates', if_exists='append')
+                elif dataset_name == 'calvings':
+                    calvings_df = calvings.get_dataframe_from_file(data_file)
+                    calvings_df.to_sql(con=connection, name='calvings', if_exists='append')
                 else:
                     raise ValueError('Unhandled dataset')
             except Exception as e:
@@ -41,6 +49,8 @@ def main():
     load_dataset('weather', '*.csv')
     load_dataset('classifications', '*.csv')
     load_dataset('genetics', '*.csv')
+    load_dataset('birthdates', '*.csv')
+    load_dataset('calvings', '*.csv')
     
 if __name__ == '__main__':
     sys.exit(main())

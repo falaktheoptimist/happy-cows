@@ -136,7 +136,7 @@ def get_dataframe_from_file(data_file):
 def main():
     """ Selects a random weather file, parses file, prints df.info()"""
     files = glob.glob(f"{helper.get_config()['datasets']['milk_volumes']['regex']}")
-    print(get_dataframe_from_file(random.choice(files)).info())
+    print(get_dataframe_from_file(random.choice(files)))
 
 if __name__ == '__main__':
     sys.exit(main())
