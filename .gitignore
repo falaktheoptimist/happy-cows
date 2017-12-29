@@ -1,6 +1,11 @@
 # YAML Config file
 .config.yml
 
+# Raw Data Directory
+data/raw/
+data/database
+
+
 # Mac OS
 .DS_Store
 
