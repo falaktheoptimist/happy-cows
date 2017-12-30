@@ -21,7 +21,6 @@ def add_days_since_calving(milk, calvings):
         animal_id = row['animal_id']
         c = calvings[(calvings['calving_date'] <= milk_date) & (calvings['animal_id'] == animal_id)]
         c = c['calving_date']
-        print(c)
         if len(c) == 0:
             calving_dates.append(np.NaN)
         else:
