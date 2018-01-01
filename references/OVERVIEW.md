@@ -119,7 +119,7 @@ Additional information regarding the reproductive health and gestation cycle of 
 
 ## Initial Findings
 
-A [preliminary analysis](/notebooks/statistics_of_milk_production.ipynb) of the currently available data revealed a number of insights:
+A [preliminary analysis](/notebooks/stats-mini-project/stats-mini-project-summary.ipynb) of the currently available data revealed a number of insights:
 
 - The herd experienced a measurable per-capita head increase in milk weights during the spring months.
 - A statistically-significant, positive linear correlation exists between an Animal's linear classification score and the amount of milk produced.  Specifically, animals with higher scores tended to produce more milk.
